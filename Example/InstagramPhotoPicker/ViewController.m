@@ -18,6 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
     // Do any additional setup after loading the view, typically from a nib.
 }
 
@@ -29,9 +30,9 @@
 - (IBAction)showAction:(id)sender {
     TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
     
-    photoPicker.cropBlock = ^(UIImage *image) {
+    photoPicker.cropBlock = ^(UIImage *left, UIImage *right) {
         //do something
-        self.imageView.image = image;
+        self.imageView.image = left;
     };
     
     UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:photoPicker];

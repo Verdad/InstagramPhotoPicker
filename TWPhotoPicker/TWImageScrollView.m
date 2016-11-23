@@ -127,7 +127,7 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
     [self addSubview:self.imageView];
     
     CGRect frame = self.imageView.frame;
-    if (image.size.height > image.size.width) {
+    if (image.size.height < image.size.width) {
         frame.size.width = self.bounds.size.width;
         frame.size.height = (self.bounds.size.width / image.size.width) * image.size.height;
     } else {
@@ -144,11 +144,12 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
     self.contentSize = imageSize;
     
     //to center
-    if (imageSize.width > imageSize.height) {
-        self.contentOffset = CGPointMake(imageSize.width/4, 0);
-    } else if (imageSize.width < imageSize.height) {
-        self.contentOffset = CGPointMake(0, imageSize.height/4);
-    }
+//    if (imageSize.width < imageSize.height) {
+//        self.contentOffset = CGPointMake(imageSize.width/4, 0);
+//    } else if (imageSize.width > imageSize.height) {
+//        self.contentOffset = CGPointMake(0, imageSize.height/4);
+//    }
+    self.contentOffset = CGPointMake(0, 0);
     
     [self setMaxMinZoomScalesForCurrentBounds];
     self.zoomScale = self.minimumZoomScale;
@@ -157,7 +158,7 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
 - (void)setMaxMinZoomScalesForCurrentBounds
 {
     self.minimumZoomScale = 1.0;
-    self.maximumZoomScale = 2.0;
+    self.maximumZoomScale = 4.0;
 }
 
 #pragma mark - UIScrollViewDelegate
