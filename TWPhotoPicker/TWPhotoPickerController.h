@@ -12,4 +12,6 @@
 
 @property (nonatomic, copy) void(^cropBlock)(UIImage *leftImage, UIImage *rightImage);
 
+- (void)tookImage:(UIImage *)image;
+
 @end

@@ -10,6 +10,7 @@
 #import "TWPhotoCollectionViewCell.h"
 #import "TWImageScrollView.h"
 #import "TWPhotoLoader.h"
+#import "TakePhotoViewController.h"
 
 @interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
     CGFloat beginOriginY;
@@ -47,8 +48,6 @@
     return YES;
 }
 
-
-
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -70,14 +69,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     TWPhoto *photo = [self.allPhotos objectAtIndex:indexPath.row];
     //TODO Add logic here to select which photo you're editing
-    if (self.isLeftSelected) {
-        [self.imageScrollViewLeft displayImage:photo.originalImage];
-    } else {
-        [self.imageScrollViewRight displayImage:photo.originalImage];
-    }
-    if (self.topView.frame.origin.y != 0) {
-        [self tapGestureAction:nil];
-    }
+    [self imageSelected:photo.originalImage];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -92,6 +84,17 @@
 
 #pragma mark - event response
 
+- (void)imageSelected:(UIImage *)image {
+    if (self.isLeftSelected) {
+        [self.imageScrollViewLeft displayImage:image];
+    } else {
+        [self.imageScrollViewRight displayImage:image];
+    }
+    if (self.topView.frame.origin.y != 0) {
+        [self tapGestureAction:nil];
+    }
+}
+
 - (void)backAction {
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
@@ -101,6 +104,12 @@
         self.cropBlock(self.imageScrollViewLeft.capture, self.imageScrollViewRight.capture);
     }
     //[self backAction];
+}
+
+- (void)takePhotoAction {
+    TakePhotoViewController *takePhoto = [[TakePhotoViewController alloc] init];
+    takePhoto.delegate = self;
+    [self presentViewController:takePhoto animated:YES completion:NULL];
 }
 
 - (void)panGestureAction:(UIPanGestureRecognizer *)panGesture {
@@ -356,7 +365,7 @@
         [photoBtn setTitle:@"Photo" forState:UIControlStateNormal];
         [photoBtn.titleLabel setFont:[UIFont systemFontOfSize:17.0f]];
         [photoBtn setTitleColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1] forState:UIControlStateNormal];
-        [photoBtn addTarget:self action:@selector(cropAction) forControlEvents:UIControlEventTouchUpInside];
+        [photoBtn addTarget:self action:@selector(takePhotoAction) forControlEvents:UIControlEventTouchUpInside];
         [self.bottomView addSubview:photoBtn];
     }
     return _bottomView;
@@ -383,6 +392,10 @@
         [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
     }
     return _collectionView;
+}
+
+-(void)tookImage:(UIImage *)image {
+    [self imageSelected:image];
 }
 
 @end
